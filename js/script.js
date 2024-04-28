@@ -30,7 +30,7 @@ async function loginUser(email, password) {
 
         const fields = ['registerEmail', 'registerPassword', 'loginEmail', 'loginPassword' ];
         fields.forEach(field => document.getElementById(field).value = '');
-        updateCartDisplay()
+        await updateCartIcon()
     } catch (err) {
         const loginMessage = document.querySelector("#loginMessageBox");
         loginMessage.textContent = "Failed to log in. Please try again.";
@@ -45,7 +45,7 @@ async function logoutUser() {
         const loginModal1 = bootstrap.Modal.getInstance(loginModalElement1);
         loginModal1.hide()
         await loginAnonymous();
-        updateCartDisplay()
+        await updateCartIcon()
     } catch (err) {
         console.log(err)
     }
@@ -111,69 +111,7 @@ async function updateCartIcon() {
 }
 
 
-async function updateCartDisplay() {
-    const user = await login();
-    const mongodb = user.mongoClient("mongodb-atlas");
-    const cartCollection = mongodb.db("ECommerce").collection("Carts");
-    const productsCollection = mongodb.db("ECommerce").collection("Products");
 
-    const cartContainer = document.getElementById("cartContainer");
-    cartContainer.innerHTML = '';
-
-    const cart = await cartCollection.findOne({ owner_id: user.id });
-
-    if (cart && cart.items.length > 0) {
-        const productIds = cart.items.map(item => item.productId);
-        const products = await productsCollection.find({ _id: { $in: productIds } });
-
-        cart.items.forEach(item => {
-            const product = products.find(p => p._id.equals(item.productId));
-
-
-            const itemDiv = document.createElement('div');
-            itemDiv.className = 'cart-item';
-            itemDiv.innerHTML = `
-                <img src="${product.picture}" alt="${product.name}" style="width:50px; height:50px;">
-                <p>Product: ${product.name}</p>
-                <p>Price: $${product.price}</p>
-                <p>Quantity: ${item.quantity}</p>
-                <p>Size: ${item.size}</p>
-            `;
-
-            const deleteButton = document.createElement('button');
-            deleteButton.textContent = 'Remove';
-            deleteButton.onclick = () => removeFromCart(item.productId, item.size);
-            itemDiv.appendChild(deleteButton);
-
-            cartContainer.appendChild(itemDiv);
-        });
-    } else {
-        cartContainer.textContent = 'Your cart is empty.';
-    }
-    await updateCartIcon();
-}
-
-async function removeFromCart(productId, size) {
-    const user = await login();
-    const mongodb = user.mongoClient("mongodb-atlas");
-    const cartCollection = mongodb.db("ECommerce").collection("Carts");
-
-    try {
-        const updateResult = await cartCollection.updateOne(
-            { owner_id: user.id },
-            { $pull: { items: { productId: productId, size: size } } }
-        );
-        if (updateResult.modifiedCount === 1) {
-            console.log("Item removed from cart");
-
-        } else {
-            console.log("No items removed");
-        }
-        ///updateCartDisplay();
-    } catch (error) {
-        console.error("Error removing item from cart:", error);
-    }
-}
 
 
 async function registerUser() {
