@@ -7,10 +7,12 @@
     
     <!--Bootstrap framework/toolkit:  -->
     <link href = "https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC" crossorigin="anonymous"">
-    
+
     <link href=“https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.1/css/all.min.css” rel=“stylesheet”>
 
     <title>Code Crusaders Website</title>
+    <script src="https://unpkg.com/realm-web"></script>
+    <script src="./js/script.js"></script>
 </head>
 
 
@@ -36,13 +38,18 @@
                         <a class="nav-link" href="index.html">Home</a>
                       </li>
                       <li class="nav-item">
-                        <a class="nav-link" href="cart.html">Cart</a>
+                        <a class="nav-link" href="cart.html" id="cartLink">Cart</a>
                       </li>
                     </ul>
-                    <form class="d-flex"> <!-- search bar -->
-                      <input class="form-control me-2" type="text" placeholder="Search">
-                      <button class="btn btn-primary" type="button">Search</button>
-                    </form>
+                    <div class="login-icon">
+                        <a onclick="checkLog()">
+                            <img src="./images/profile.svg" alt="Profile" width="30px" height="auto">
+                        </a>
+                    </div>
+                    <div class="d-flex"> <!-- search bar -->
+                      <input id="searchProducts" class="form-control me-2" type="text" placeholder="Search">
+                      <button class="btn btn-primary" type="button" onclick="searchProducts()" >Search</button>
+                    </div>
                 </div>
 
             </nav>
@@ -54,7 +61,7 @@
     <!-- products-->
     <div class = "container my-5">
         <h2 class ="text-center mb-4">Today's Products</h2>
-        <div class = "row row-cols-1 row-cols-md-1 row-cols-lg-2 g-2">
+        <div class = "row row-cols-1 row-cols-md-1 row-cols-lg-2 g-2 " id="productsContainer">
             <!-- 1st item -->
             <div class="card h-100">
                 <img src="images/product-1.jpeg" class="card-img-top" alt="Shoe">
@@ -114,6 +121,89 @@
         </div>
     </section>
 
+
+    <!-- login forms-->
+    <div class="modal fade" id="loginModal1" tabindex="-1" aria-labelledby="loginModalLabel1" aria-hidden="true" style="color:white; border: none;">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-color: #181a1b;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel1"></h5>
+                    <button type="button" data-bs-dismiss="modal" aria-label="Close"
+                            style="background: none; border: none; color: white; font-size: 2em;">&times;
+                    </button>
+                </div>
+                <div class="modal-body">
+
+                    <div id="logout" class="container py-4 " style=" border: none;">
+
+                        <button class="btn btn-primary mt-2" onclick="logoutUser()">logout</button>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="modal fade" id="loginModal" tabindex="-1" aria-labelledby="loginModalLabel" aria-hidden="true" style="color:white;">
+        <div class="modal-dialog">
+            <div class="modal-content" style="background-color: #181a1b;">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="loginModalLabel">Login</h5>
+                    <button type="button" data-bs-dismiss="modal" aria-label="Close"
+                            style="background: none; border: none; color: white; font-size: 2em;">&times;
+                    </button>
+                </div>
+                <div class="modal-body">
+                    <div id="loginMessageBox" class="text-warning "></div>
+
+                    <div id="loginForm" class="container py-4"  style=" border: none;">
+
+                        <div class="form-group">
+                            <label for="loginEmail">Email:</label>
+                            <input type="text" class="form-control" id="loginEmail" placeholder="Enter your email">
+                        </div>
+                        <div class="form-group">
+                            <label for="loginPassword">Password:</label>
+                            <input type="password" class="form-control" id="loginPassword"
+                                   placeholder="Enter your password">
+                        </div>
+                        <button class="btn btn-primary mt-2" onclick="passLogin()">Log in</button>
+                        <p class="mt-3">Don't have an account?
+                            <button class="btn btn-link p-0" onclick="showForm('registerForm')">Create one</button>
+                        </p>
+
+                    </div>
+
+                    <div id="registerForm" class="container py-4" style="display: none; border: none;">
+                        <div class="form-group">
+                            <label for="registerUsername">Username:</label>
+                            <input type="text" class="form-control" id="registerUsername"
+                                   placeholder="Enter your username">
+                        </div>
+                        <div class="form-group">
+                            <label for="registerEmail">Email:</label>
+                            <input type="email" class="form-control" id="registerEmail" placeholder="Enter your email">
+                        </div>
+
+                        <div class="form-group">
+                            <label for="registerPassword">Password:</label>
+                            <input type="password" class="form-control" id="registerPassword"
+                                   placeholder="Enter a password">
+                        </div>
+
+                        <button class="btn btn-primary mt-2" onclick="registerUser()">Create account</button>
+                        <p class="mt-3">Already have an account?
+                            <button class="btn btn-link p-0" onclick="showForm('loginForm')">Log in</button>
+                        </p>
+                    </div>
+
+
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+
     <!-- footer -->
     <footer class = "bg-dark text-light py-4">
         <div class="container">
@@ -152,7 +242,10 @@
     </footer>
 
 
-    <script src="js/script.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.2.1/dist/js/bootstrap.min.js"
+            integrity="sha384-7VPbUDkoPSGFnVtYi0QogXtr74QeVeeIs99Qfg5YCF+TidwNdjvaKZX19NZ/e6oz"
+            crossorigin="anonymous"></script>
+
     
 </body>
 </html>
