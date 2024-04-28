@@ -1,0 +1,19 @@
+.cart-item {
+    margin-bottom: 1rem;
+}
+
+@media (max-width: 768px){
+    .banner-image {
+        min-height: 300px;
+    }
+}
+
+/* featured product cards */
+.card-title a{
+    color: #333;
+    text-decoration: none;
+}
+
+.card-title a:hover{
+    color: #ff523b;
+}
