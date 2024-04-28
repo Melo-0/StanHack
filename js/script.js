@@ -64,7 +64,7 @@ async function loadProducts() {
         const productDiv = document.createElement('div');
         productDiv.className = 'card h-100';
         productDiv.innerHTML = `
-            <img src="${product.picture}" class="card-img-top" alt="${product.name}" style="height: 250px; object-fit: cover;">>
+            <img src="${product.picture}" class="card-img-top" alt="${product.name}" style="height: 250px; object-fit: cover;">
             <div class="card-body">
                 <h5 class="card-title">${product.name}</h5>
                 <p class="card-text">$${product.price}</p>
